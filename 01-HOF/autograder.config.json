@@ -1,0 +1,7 @@
+{
+  "weights": {
+    "assertions": 85,
+    "coverage": 12.5,
+    "linting": 2.5
+  }
+}
