@@ -23,11 +23,14 @@
     "format:check": "prettier --config .prettierrc --check src/",
     "lint": "eslint --config .eslintrc --max-warnings 0 src/",
     "lint:fix": "eslint --config .eslintrc --fix src/",
-    "start": "ts-node ./src/lab.ts",
-    "test": "jest",
-    "test:coverage": "jest --coverage",
-    "test:json": "jest --json --outputFile=test-results.json"
+    "start": "ts-node ./src/main.ts",
+    "test": "jest ./src",
+    "test:coverage": "jest ./src --coverage",
+    "test:json": "jest ./src --json --outputFile=test-results.json"
   },
   "type": "module",
+  "engines": {
+    "node": ">=16.0.0 <20.0.0"
+  },
   "name": "03-lists"
 }
