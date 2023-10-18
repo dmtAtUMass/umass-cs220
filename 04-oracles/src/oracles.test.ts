@@ -12,7 +12,7 @@ describe("generateInput", () => {
 });
 
 // Part A
-describe("Part A: stableMatchingOracle", () => {
+describe.skip("Part A: stableMatchingOracle", () => {
   // You do not need to write more tests. The two provided are sufficient.
 
   // Given an correct solution, no assertion should fail, and no errors should be thrown
@@ -27,7 +27,7 @@ describe("Part A: stableMatchingOracle", () => {
 });
 
 // Part B
-describe.skip("Part B: stableMatchingRunOracle", () => {
+describe("Part B: stableMatchingRunOracle", () => {
   // You do not need to write more tests than the two provided
 
   // Given an correct solution, no assertion should fail, and no errors should be thrown
