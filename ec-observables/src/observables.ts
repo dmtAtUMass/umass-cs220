@@ -1,4 +1,4 @@
-import { escape } from "querystring";
+// import { escape } from "querystring";
 import { Observable, Observer } from "../include/observable.js";
 
 // Extra Credit Functions
@@ -59,13 +59,24 @@ export function statefulObserver(o: Observable<number>): Observable<number> {
 // Optional Additional Practice
 
 export function mergeMax(o1: Observable<number>, o2: Observable<number>): Observable<{ obs: number; v: number }> {
-  // TODO: Implement this function
-  return new Observable();
+  const result = new Observable<{ obs: number; v: number }>();
+  let max = -Infinity;
+  o1.subscribe(data => {
+    if (data >= max) result.update({ obs: 1, v: data });
+    max = Math.max(max, data);
+  });
+  o2.subscribe(data => {
+    if (data >= max) result.update({ obs: 2, v: data });
+    max = Math.max(max, data);
+  });
+  return result;
 }
 
 export function merge(o1: Observable<string>, o2: Observable<string>): Observable<string> {
-  // TODO: Implement this function
-  return new Observable();
+  const result = new Observable<string>();
+  o1.subscribe(data => result.update(data));
+  o2.subscribe(data => result.update(data));
+  return result;
 }
 
 export class GreaterAvgObservable extends Observable<number> {
@@ -74,8 +85,20 @@ export class GreaterAvgObservable extends Observable<number> {
   }
 
   greaterAvg(): Observable<number> {
-    // TODO: Implement this method
-    return new Observable();
+    const result = new Observable<number>();
+    let prev1 = -Infinity;
+    let prev2 = -Infinity;
+    this.subscribe(data => {
+      const conditions = [
+        prev2 === -Infinity,
+        prev1 === -Infinity && data >= 1.5 * prev1,
+        data >= (1.5 * (prev1 + prev2)) / 2,
+      ];
+      if (conditions.some(e => e)) result.update(data);
+      prev1 = prev2;
+      prev2 = data;
+    });
+    return result;
   }
 }
 
@@ -86,7 +109,13 @@ export class SignChangeObservable extends Observable<number> {
 
   signChange(): Observable<number> {
     // TODO: Implement this method
-    return new Observable();
+    let prev = 0;
+    const result = new Observable<number>();
+    this.subscribe(data => {
+      if (data !== 0 && data * prev <= 0) result.update(data);
+      prev = data;
+    });
+    return result;
   }
 }
 
@@ -96,5 +125,8 @@ export class SignChangeObservable extends Observable<number> {
  * @param f Observer function
  */
 export function usingSignChange(numArr: number[], f: Observer<number>) {
-  // TODO: Implement this function
+  const o = new SignChangeObservable();
+  const o1 = o.signChange();
+  o1.subscribe(data => f(data));
+  numArr.forEach(e => o1.update(e));
 }

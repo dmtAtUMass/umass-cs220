@@ -1,5 +1,5 @@
-import assert from "assert";
-import { Observable, Observer } from "../include/observable.js";
+// import assert from "assert";
+import { Observable } from "../include/observable.js";
 import {
   classifyObservables,
   obsStrCond,
@@ -8,7 +8,6 @@ import {
   merge,
   GreaterAvgObservable,
   SignChangeObservable,
-  usingSignChange,
 } from "./observables.js";
 
 describe("classifyObservables", () => {
@@ -51,7 +50,7 @@ describe("classifyObservables", () => {
 
 describe("obsStrCond", () => {
   it("simple strings with simple condidtions", () => {
-    const f1 = (x: string) => x + 3;
+    const f1 = (x: string) => x + "3";
     const f = (x: string) => x.length < 4;
     const o = new Observable<string>();
     const cond = obsStrCond([f1], f, o);
@@ -82,21 +81,74 @@ describe("statefulObserver", () => {
 });
 
 describe("mergeMax", () => {
-  // More tests go here.
+  it("should udpate every time a new max is found", () => {
+    const o1 = new Observable<number>();
+    const o2 = new Observable<number>();
+    const o3 = mergeMax(o1, o2);
+    const spy = jest.fn();
+    o3.subscribe(spy);
+    const arr1 = [1, 3, 4, 5, 6];
+    const arr2 = [2, 2, 7, 4, 4];
+    const counter = [0, 1, 2, 3, 4];
+    counter.forEach(e => {
+      o1.update(arr1[e]);
+      o2.update(arr2[e]);
+    });
+    expect(spy).toHaveBeenCalledTimes(5);
+  });
 });
 
 describe("merge", () => {
-  // More tests go here.
+  it("should only update when signs changes", () => {
+    const o1 = new Observable<string>();
+    const o2 = new Observable<string>();
+    const o3 = merge(o1, o2);
+    const spy = jest.fn();
+    o3.subscribe(spy);
+    const arr1 = ["a", "b", "c", "d", "e"];
+    const arr2 = ["f", "g", "h", "i", "j"];
+    const counter = [0, 1, 2, 3, 4];
+    counter.forEach(e => {
+      o1.update(arr1[e]);
+      o2.update(arr2[e]);
+    });
+    expect(spy).toHaveBeenCalledTimes(10);
+  });
 });
 
 describe("GreaterAvgObservable", () => {
-  // More tests go here.
+  it("should correctly capture numbers geq  50% average", () => {
+    const o = new GreaterAvgObservable();
+    const o1 = o.greaterAvg();
+    const spy = jest.fn();
+    o1.subscribe(spy);
+    o.update(1);
+  });
 });
 
 describe("SignChangeObservable", () => {
-  // More tests go here.
+  it("should only update when signs changes", () => {
+    const o = new SignChangeObservable();
+    const o1 = o.signChange();
+    const arr = [1, 0, 1, 1, -1, -2, -3, 1];
+    const spy = jest.fn();
+    o1.subscribe(spy);
+    // o1.subscribe(console.log);
+    arr.forEach(e => o.update(e));
+    expect(spy).toHaveBeenCalledTimes(4);
+  });
 });
 
 describe("usingSignChange", () => {
-  // More tests go here.
+  it("should only update when signs changes", () => {
+    const o = new SignChangeObservable();
+    const o1 = o.signChange();
+    const f = (x: number) => 2 * x;
+    const arr = [1, 0, 1, 1, -1, -2, -3, 1];
+    const spy = jest.fn();
+    o1.subscribe(spy);
+    o1.subscribe(f);
+    arr.forEach(e => o.update(e));
+    expect(spy).toHaveBeenCalledTimes(4);
+  });
 });

@@ -20,4 +20,12 @@ export class Observable<T> {
   update(x: T) {
     this.observers.forEach(f => f(x));
   }
+
+  filter(f: (x: T) => boolean){
+    const result = new Observable<T>();
+    this.subscribe((x:T) => {
+      if (f(x)) result.update(x)
+    })
+  return result;
+  }
 }
