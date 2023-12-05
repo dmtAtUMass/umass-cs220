@@ -1,6 +1,6 @@
 import assert from "assert";
 import { Stream, sempty, snode, from, to } from "../include/stream.js";
-import { every3_1, keepMult_1, interStream } from "./lab.js";
+import { every3_1, keepMult_1, interStream, fillGaps } from "./lab.js";
 
 function compareStreams<T>(s1: Stream<T>, s2: Stream<T>, n: number): void {
   let r1 = s1; // Copy reference
@@ -91,4 +91,27 @@ describe("interStream", () => {
     const output = interStream(input_1, input_2);
     compareStreams(expected_output, output, 100);
   });
+});
+
+describe("MIDTERM TEST ", () => {
+  it("consecutive stream", () => {
+    const streamConst = from(1, 3)
+    const streamConstFilled = fillGaps(streamConst)
+    expect(streamConstFilled.head()).toBe(1)
+    expect(streamConstFilled.tail().head()).toBe(2)
+    expect(streamConstFilled.tail().tail().head()).toBe(3)
+    expect(streamConstFilled.tail().tail().tail().head()).toBe(4)
+    expect(streamConstFilled.tail().tail().tail().tail().head()).toBe(5)
+    expect(streamConstFilled.tail().tail().tail().tail().tail().head()).toBe(6)
+  });
+  it("decreasing stream", () => {
+    const streamConst = from(3, -2)
+    const streamConstFilled = fillGaps(streamConst)
+    expect(streamConstFilled.head()).toBe(3)
+    expect(streamConstFilled.tail().head()).toBe(2)
+    expect(streamConstFilled.tail().tail().head()).toBe(1)
+    expect(streamConstFilled.tail().tail().tail().head()).toBe(0)
+    expect(streamConstFilled.tail().tail().tail().tail().head()).toBe(-1)
+    expect(streamConstFilled.tail().tail().tail().tail().tail().head()).toBe(-2)
+  })
 });

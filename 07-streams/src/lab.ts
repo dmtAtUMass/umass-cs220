@@ -1,4 +1,4 @@
-import { Stream, snode, from } from "../include/stream.js";
+import { Stream, snode, from, sempty } from "../include/stream.js";
 
 // In Class Exercises
 
@@ -46,4 +46,15 @@ export function interStream<T>(s1: Stream<T>, s2: Stream<T>): Stream<T> {
   } else {
     return snode(s1.head(), () => interStream(s2, s1.tail()));
   }
+}
+
+export function helper(a: number, s:Stream<number>): Stream<number> {
+  if (s.isEmpty()) return sempty()
+  if ( a === s.head()) return s
+  return a < s.head() ? helper(a, snode(s.head() - 1, () => s)) : helper(a, snode(s.head() + 1, () => s))
+}
+
+export function fillGaps(s:Stream<number>): Stream<number>{
+  const node = helper(s.head(), s.tail())
+  return snode(node.head(), () => fillGaps(node.tail()))
 }
