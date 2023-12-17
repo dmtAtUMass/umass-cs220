@@ -18,3 +18,6 @@ Run `npm run test` to test. You may as well run `npm run test:coverage` to test 
 
 Run `npm run lint` to test linting. You may as well run `npm run lint:fix` to initialize auto linting (although this may not work for TS typing.
 
+### Double Credit Project
+
+Project 07 about API and fetching is somewhere else. [Here](https://github.com/UMassProjects/umass-cs220-07). It was a group work.
